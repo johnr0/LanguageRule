@@ -1,0 +1,232 @@
+/* Put your css here */
+.WordInPhrase{
+    display: inline;
+    padding: 2px;
+}
+
+.WordInPhrase_Button{
+    display: inline;
+    border: 1px solid #888888;
+    padding: 2px;
+    border-radius: 5px;
+    font-size: 20pt;
+    cursor: default;
+}
+
+.WordInPhrase_WordChoosing:hover{
+    background-color: #888888;
+}
+
+.WordInPhrase_Selected{
+    background-color: #72d17f;
+}
+
+.WordInPhrase_CurrentAnno{
+    background-color: #d17272;
+}
+
+.WordInPhrase_StopWords{
+    font-size:20pt;
+}
+
+.ChildWord{
+    border: solid 1px #dddddd;
+    border-radius: 10px;
+    padding: 7px;
+}
+
+.ChildWord:hover{
+    background-color: #888888;
+}
+
+.ChildWordSelected{
+    background-color: #72d17f;
+}
+
+.PhraseBox{
+    padding: 10px;
+    border: solid 1px black;
+    border-radius: 10px;
+}
+
+.WholeWrapper{
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.SemanticWrapper{
+    border: solid 1px black;
+    padding-left: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
+    padding-right: 10px;
+    border-radius: 10px;
+    
+    display: flex;
+}
+
+.SemanticInput{
+    border: solid 1px black;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.SemanticOutput{
+    border: solid 1px black;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.WordExplorationBox{
+    border: solid 1px black;
+    padding: 5px;
+    margin: 5px;
+    height: 50%;
+}
+
+.HigherConcepts_Container{
+    border: solid 1px black;
+    padding: 5px;
+    margin: 5px;
+    overflow: auto;
+    max-height: 200px;
+}
+
+.HigherConcept{
+    border: solid 1px #dddddd;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+    padding: 2px;
+}
+
+.HigherConcept:hover{
+    background-color: #888888;
+}
+
+.HigherConceptSelected{
+    background-color: #72d17f;
+}
+
+.ConceptExample{
+    padding: 5px;
+    border: solid 1px #cccccc;
+    border-radius: 5px;
+    position: relative;
+    padding-right: 20px;
+}
+.ConceptExampleExcluded{
+    background-color: #888888;
+}
+
+.ConceptExample_Remove{
+    top: 8px;
+    right: 2px;
+    text-align: center;
+    line-height: 15px;
+    position: absolute;
+    border-radius: 2px;
+    width: 15px;
+    height: 15px;
+    color: white;
+    background-color: red;
+    cursor: default;
+}
+
+.ConceptExample_Add{
+    top: 8px;
+    right: 2px;
+    text-align: center;
+    line-height: 15px;
+    position: absolute;
+    border-radius: 2px;
+    width: 15px;
+    height: 15px;
+    color: white;
+    background-color: #008800;
+    cursor: default;
+}
+
+.ConceptExampleBox{
+    overflow: auto;
+    max-height: 100px;
+    border: solid 1px black;    
+    display: flex;
+    flex-wrap: wrap
+
+}
+
+.CandidateBox{
+    overflow: auto;
+    max-height: 200px;
+    border: solid 1px black;    
+
+}
+
+.Candidate{
+    margin: 10px;
+    padding: 5px;
+    border: solid 1px #888888;
+    border-radius: 10px;
+}
+
+.CandidateChoosebtn{
+    float: right;
+    height: 18px;
+    line-height: 18px;
+    margin-right: 10px;
+}
+
+.UserExamplesBox{
+    overflow: auto;
+    max-height: 67px;
+    min-height:33px;
+    border: solid 1px black;    
+    display: flex;
+    flex-wrap: wrap
+
+}
+
+.SemanticDoneButton{
+    margin: auto;
+    display: block;
+}
+
+.LoadingScreen{
+    position: absolute;
+    top:0;
+    left:0;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffffbb;
+}
+
+.LoadingCircle{
+    margin: auto;
+    display: block;
+    top: 200px;
+}
+
+.hidden{
+    visibility: hidden;
+}
+
+.fixedheight{
+    flex: 0 1 0;
+}
+
+.stretchheight{
+    flex: 1 1 auto;
+}
+
+.centered{
+    width: fit-content;
+    margin:auto;
+    display: block;
+}
+
+
+

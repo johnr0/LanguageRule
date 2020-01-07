@@ -21,12 +21,26 @@ class SyntaxExplore extends Component{
             return (<SyntaxExampleExplore mother_this={this.props.mother_this} mother_state={this.props.mother_state}></SyntaxExampleExplore>)
         }
     }
+
+    handleHeadSwitch(){
+        this.props.mother_this.setState({dependency_head_switch: !this.props.mother_state.dependency_head_switch})
+    }
+
+    renderHeadSwitch(){
+        return (<div>
+            <label>
+                <input type="checkbox" ref='headSwitch' onClick={this.handleHeadSwitch.bind(this)}/>
+                <span>If the color of red word and blue word needs to be switched, please check this box. </span>
+            </label>
+        </div>)
+    }
     
     render(){
         return (<div className='col s12'>
             {this.renderDirectExplore()}
             {this.renderOr()}
             {this.renderExampleExplore()}
+            {this.renderHeadSwitch()}
         </div>)
     }
 }

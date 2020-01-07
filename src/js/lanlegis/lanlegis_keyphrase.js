@@ -33,9 +33,17 @@ class KeyPhrase extends Component{
 
                 var dep = this.props.mother_state.syntax_candidates[this.props.mother_state.progress_syntax];
                 if (dep['head']==idx){
-                    syntax_head_anno = true;
+                    if(this.props.mother_state.dependency_head_switch==false){
+                        syntax_head_anno = true;
+                    }else{
+                        syntax_tail_anno=true;
+                    }
                 }else if(dep['word']==idx){
-                    syntax_tail_anno = true;
+                    if(this.props.mother_state.dependency_head_switch==false){
+                        syntax_tail_anno = true;
+                    }else{
+                        syntax_head_anno=true;
+                    }
                 }
             }
             console.log(syntax_head_anno, syntax_tail_anno, 'head, tail')

@@ -47,7 +47,30 @@ class SyntaxDefinitionExplore extends Component{
     }
 
     selectDependency(dep){
-        this.props.mother_this.setState({cur_selected_dep: dep})
+        this.props.mother_this.setState({cur_selected_dep: dep, modal:''})
+    }
+
+    renderNextButton(){
+        if(this.props.mother_state.cur_selected_dep!=''){
+            return (<div>
+                <div className='textCentered'><b>You choose {this.props.mother_state.cur_selected_dep}. Please confirm by clicking the below button.</b></div>
+                <div style={{margin:'auto', display:'table'}} className='btn' onClick={this.confirmSelection.bind(this)}>Confirm</div>
+            </div>)
+        }
+    }
+
+    confirmSelection(){
+            var cur_syntax_dict = JSON.parse(JSON.stringify(this.props.mother_state.syntax_candidates[this.props.mother_state.progress_syntax]))
+            cur_syntax_dict['dependency'] = this.props.mother_state.cur_selected_dep
+            if(this.props.mother_state.dependency_head_switch==true){
+                var head = cur_syntax_dict['head']
+                cur_syntax_dict['head'] = cur_syntax_dict['tail']
+                cur_syntax_dict['tail'] = head
+            }
+            var syntax_relations = this.props.mother_state.syntax_relations
+            var new_progress_syntax = this.props.mother_state.progress_syntax+1
+            syntax_relations.push(cur_syntax_dict)
+            this.props.mother_this.setState({syntax_relations: syntax_relations, progress_syntax: new_progress_syntax, syntax_subprogress:'verify' })
     }
 
     renderButton(dep){
@@ -198,6 +221,7 @@ class SyntaxDefinitionExplore extends Component{
                     </div>
                 </div>
             </div>
+            {this.renderNextButton()}
             {this.renderInfoModal()}
         </div>)
     }

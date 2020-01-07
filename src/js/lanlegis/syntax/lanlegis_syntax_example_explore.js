@@ -120,6 +120,11 @@ class SyntaxExampleExplore extends Component{
         if(yes){
             var cur_syntax_dict = JSON.parse(JSON.stringify(this.props.mother_state.syntax_candidates[this.props.mother_state.progress_syntax]))
             cur_syntax_dict['dependency'] = this.state.inferred_dep
+            if(this.props.mother_state.dependency_head_switch==true){
+                var head = cur_syntax_dict['head']
+                cur_syntax_dict['head'] = cur_syntax_dict['tail']
+                cur_syntax_dict['tail'] = head
+            }
             var syntax_relations = this.props.mother_state.syntax_relations
             var new_progress_syntax = this.props.mother_state.progress_syntax+1
             syntax_relations.push(cur_syntax_dict)

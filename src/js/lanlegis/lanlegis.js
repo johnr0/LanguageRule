@@ -85,6 +85,7 @@ class LanLegis extends Component{
         // syntax candidates shows syntax relations from server
         syntax_candidates: [],
         cur_selected_dep: '',
+        dependency_head_switch: false,
 
         
     };

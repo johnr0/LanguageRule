@@ -1,4 +1,4 @@
-# Instantaneous Segmentation
+# LanLegis
 
 <!-- Setting up
 --

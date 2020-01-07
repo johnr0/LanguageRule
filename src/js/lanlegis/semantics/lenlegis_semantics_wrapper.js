@@ -5,9 +5,6 @@ import SemanticsOutput from './lanlegis_semantics_output'
 
 class SemanticsWrapper extends Component{
 
- 
-
-
     render(){
         return (<div className={'row stretchheight ' +((this.props.mother_state.progress=='semantics')?'SemanticWrapper':'hidden')}>
             <div className='SemanticInput col s4'>

@@ -4,6 +4,7 @@ import HeadInstruction from './lanlegis_headinstruction'
 import KeywordChoosing from './lanlegis_keywordchoosing'
 import Semantics from './semantics/lenlegis_semantics_wrapper'
 import axios from 'axios'
+import SyntaxWrapper from './syntax/lanlegis_syntax_wrapper';
 
 // this is the mother component for generating the rule
 class LanLegis extends Component{
@@ -53,6 +54,15 @@ class LanLegis extends Component{
         chosen_examples: [],
         user_added_examples: [],
 
+        empath_examples: [],
+
+
+        // below used for example based search. 
+        // when below are not initialized use example based search.
+        example_search_list: [],
+        example_search_dict: {},
+        example_choosen_word: '',
+
         //below will be used for example-based search
         candidates_from_examples: [],
 
@@ -63,6 +73,20 @@ class LanLegis extends Component{
             // below is variables that are related to selecting the pos of the word
         pos: undefined,
         pos_list: [],
+
+
+
+
+        // below is related to syntax
+        // syntax subprogress is composed of verify, and exploration
+        syntax_subprogress: '',
+        // syntax_relations stored user selected / generated syntaxes
+        syntax_relations: [], 
+        // syntax candidates shows syntax relations from server
+        syntax_candidates: [],
+        cur_selected_dep: '',
+
+        
     };
 
 
@@ -97,6 +121,9 @@ class LanLegis extends Component{
                     cur_left_overs = cur_left_overs+words[i]+cur_split[j]
                 }
                 // console.log(cur_left_overs)
+                if(i==0){
+                    continue
+                }
                 stop_words.push(cur_stop)
             }
             // console.log(stop_words)
@@ -121,40 +148,67 @@ class LanLegis extends Component{
     initializeSemanticSearch(word){
         this.setState({cur_origin_word:undefined, word_trajectory: []})
         if(this.state.backend_condition=='wordnet'){
-            if(this.state.input_condition!='example'){
-                console.log('iss')
-                axios.post(`/query_wordnet_word`, {word:word})
-                .then(res => {
-                    var query_result = res.data['query_result']
-                    var pos_list = []
-                    for(var i in query_result){
-                        var l = query_result[i]['name'].split('.')
-                        var pos =l[l.length-2]
-                        if (pos=='s'){
-                            pos = 'a'
-                        }
-                        if (pos_list.indexOf(pos)==-1){
-                            pos_list.push(pos)
-                        }
+            
+            axios.post(`/query_wordnet_word`, {word:word})
+            .then(res => {
+                var query_result = res.data['query_result']
+                var pos_list = []
+                for(var i in query_result){
+                    var l = query_result[i]['name'].split('.')
+                    var pos =l[l.length-2]
+                    if (pos=='s'){
+                        pos = 'a'
                     }
-                    console.log(pos_list)
+                    if (pos_list.indexOf(pos)==-1){
+                        pos_list.push(pos)
+                    }
+                }
+                console.log(pos_list)
 
-                    var query_result_list = this.state.query_result_list
-                    query_result_list.push(query_result)
-                    console.log(pos_list, query_result_list)
+                var query_result_list = this.state.query_result_list
+                query_result_list.push(query_result)
+                console.log(pos_list, query_result_list)
+                if(this.state.input_condition!='example'){
                     // if there is only one pos
                     if (pos_list.length==0){
                         this.setState({semantics_subprogress:'word_exploration', query_result_list:query_result_list, cur_origin_word:word})
                     }
                     else if (pos_list.length==1){
-                        this.setState({pos:pos_list[0], pos_list:pos_list, semantics_subprogress:'word_exploration', init_query_result:query_result, query_result_list:query_result_list, cur_origin_word:word})
+                        this.setState({pos:pos_list[0], pos_list:pos_list, semantics_subprogress:'word_exploration', init_query_result:query_result, query_result_list:query_result_list, cur_origin_word:word, hypernyms: query_result})
                     }
                     // if there are multiple pos
                     else{
                         this.setState({semantics_subprogress:'pos', init_query_result:query_result, pos_list: pos_list, cur_origin_word:word})
                     }
-                })
-            }
+                }else{
+                    if(pos_list.length==0){
+                        this.setState({semantics_subprogress:'word_exploration', query_result_list:query_result_list, cur_origin_word:word})
+                    }else{
+                        this.setState({semantics_subprogress:'word_exploration', query_result_list:query_result_list, cur_origin_word:word, init_query_result: query_result})
+                    }
+                    
+                }
+            })
+        }else{
+            // for empath
+            
+            // get all possible pos from the server
+            axios.post('query_pos', {word:word})
+            .then(res => {
+                var pos_list = res.data['query_result']
+                if (pos_list.length==0){
+                    var query_result_list = this.state.query_result_list
+                    query_result_list.push([])
+                    this.setState({pos: 'X', semantics_subprogress:'word_exploration', init_query_result: [], pos_list:pos_list, cur_origin_word:word, query_result_list: query_result_list})
+                }else if(pos_list.length==1){
+                    var query_result_list = this.state.query_result_list
+                    query_result_list.push([])
+                    this.setState({pos: pos_list[0], semantics_subprogress:'word_exploration', init_query_result: [], pos_list:pos_list, cur_origin_word:word, query_result_list: query_result_list})
+                }else{
+                    this.setState({semantics_subprogress:'pos', init_query_result: [], pos_list:pos_list, cur_origin_word:word})
+                }
+            })
+
         }
     }
 
@@ -172,7 +226,23 @@ class LanLegis extends Component{
         }
         console.log(new_query_result)
 
-        this.setState({pos:pos, semantics_subprogress: 'word_exploration', query_result_list:[new_query_result]})
+        this.setState({pos:pos, semantics_subprogress: 'word_exploration', query_result_list:[new_query_result], hypernyms: new_query_result})
+    }
+
+    originalTextSyntaxCall(){
+        var original_text = this.state.key_phrase
+        var words = this.state.words
+        var selected_indexes = this.state.selected_indexes
+        axios.post(`/query_dependency_original_text`, {words:words, original_text: original_text, selected_indexes:selected_indexes})
+        .then(res => {
+            var dependencies = res.data['dependencies']
+            if(dependencies.length!=0){
+                this.setState({syntax_candidates:dependencies})
+            }else{
+                this.setState({progress:'done'})
+            }
+            
+        })
     }
 
     checkstate(){
@@ -230,6 +300,16 @@ class LanLegis extends Component{
         }
     }
 
+    renderRuleGenerator(){
+        if(this.state.progress=='semantics'){
+            return (<Semantics mother_state={this.state} mother_this={this}></Semantics>)
+        }else if(this.state.progress=='syntax'){
+            return (<SyntaxWrapper mother_state={this.state} mother_this={this}></SyntaxWrapper>)
+        }else{
+            return (<Semantics mother_state={this.state} mother_this={this}></Semantics>)
+        }
+    }
+
 
     render(){
         if ((this.state.input_condition!='example' || this.state.output_condition!='example') && this.state.backend_condition!='wordnet'){
@@ -241,7 +321,9 @@ class LanLegis extends Component{
                 <HeadInstruction mother_state={this.state}></HeadInstruction>
                 <KeyPhrase mother_state={this.state} mother_this={this}></KeyPhrase>
                 <KeywordChoosing mother_state={this.state} mother_this={this}></KeywordChoosing>
-                <Semantics mother_state={this.state} mother_this={this}></Semantics>
+                {/* <Semantics mother_state={this.state} mother_this={this}></Semantics>
+                <SyntaxWrapper mother_state={this.state} mother_this={this}></SyntaxWrapper> */}
+                {this.renderRuleGenerator()}
                 {this.renderLoading()}
                 {/* <div className='stretchheight'></div> */}
                 <span onClick={this.checkstate.bind(this)}>check state</span>

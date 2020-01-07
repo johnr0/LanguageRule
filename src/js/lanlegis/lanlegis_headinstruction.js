@@ -13,6 +13,8 @@ class HeadInstruction extends Component{
             }else{
                 return (<span>Search for the highest level concept that has the core meaning to the <span style={{color:'#cc0000'}}>red word</span>.</span>)
             }
+        }else if(this.props.mother_state.progress=='syntax'){
+            return (<span>Search for the dependency relationship between <span style={{color:'#cc0000'}}>red word</span> and <span style={{color:'#0000cc'}}>blue word</span>.</span>)
         }else{
             return ''
         }

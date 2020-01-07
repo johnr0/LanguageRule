@@ -16,6 +16,28 @@ class SemanticsPOS extends Component{
                 pos_full='adjective'
             }else if(pos=='r'){
                 pos_full='adverb'
+            }else if(pos=='VERB'){
+                pos_full='verb'
+            }else if(pos=='NOUN'){
+                pos_full='noun'
+            }else if(pos=='ADJ'){
+                pos_full='adjective'
+            }else if(pos=='ADV'){
+                pos_full='adverb'
+            }else if(pos=='ADP'){
+                pos_full= 'adposition'
+            }else if(pos=='CONJ'){
+                pos_full= 'conjunction'
+            }else if(pos=='DET'){
+                pos_full= 'determiner'
+            }else if(pos=='NUM'){
+                pos_full= 'numeral'
+            }else if(pos=='PRON'){
+                pos_full= 'pronoun'
+            }else if(pos=='PRT'){
+                pos_full= 'particle'
+            }else if(pos=='X'){
+                pos_full= 'other'
             }
             return (<div key={'pos_selection_'+pos}>
                 <label>

@@ -13,9 +13,28 @@
     cursor: default;
 }
 
+.WordInPhrase_Button_small{
+    display: inline;
+    border: 1px solid #888888;
+    padding: 2px;
+    border-radius: 5px;
+    cursor: default;
+}
+.WordInPhrase_Button_small:hover{
+    background-color: #888888;
+}
+.WordInPhrase_Button_small2{
+    display: inline;
+    border: 1px solid #888888;
+    padding: 2px;
+    border-radius: 5px;
+    cursor: default;
+}
+
 .WordInPhrase_WordChoosing:hover{
     background-color: #888888;
 }
+
 
 .WordInPhrase_Selected{
     background-color: #72d17f;
@@ -23,6 +42,24 @@
 
 .WordInPhrase_CurrentAnno{
     background-color: #d17272;
+}
+
+.WordInPhrase_SyntaxHead{
+    background-color: #d17272;
+}
+
+.WordInPhrase_SyntaxTail{
+    background-color: #8888d1;
+}
+
+.SyntaxHead{
+    color: #d10000;
+    font-weight: bold;
+}
+
+.SyntaxTail{
+    color: #0000d1;
+    font-weight: bold;
 }
 
 .WordInPhrase_StopWords{
@@ -67,14 +104,13 @@
 }
 
 .SemanticInput{
-    border: solid 1px black;
     padding: 10px;
     margin: 10px;
     border-radius: 10px;
 }
 
 .SemanticOutput{
-    border: solid 1px black;
+    /* border: solid 1px black; */
     padding: 10px;
     margin: 10px;
     border-radius: 10px;
@@ -228,5 +264,35 @@
     display: block;
 }
 
+.textCentered{
+    text-align: center;
+}
 
+.DependencyModal{
+    position: absolute;
+    border: solid 1px black;
+    background-color: white;
+    padding: 5px;
+}
 
+.SyntaxButton{
+    border: solid 1px black;
+    padding: 2px;
+    margin-bottom: 2px;
+}
+.SyntaxButton:hover{
+    background-color: #888888;
+}
+.SyntaxButtonSelected{
+    background-color: #72d17f;
+}
+
+.emptyFiller{
+    height: 29px;
+}
+
+.SyntaxDefinitionContainer{
+    border: solid 1px black;
+    overflow-y: auto;
+    max-height:200px;
+}

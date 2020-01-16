@@ -6,7 +6,15 @@ import stanfordnlp
 import nltk
 from nltk.stem import WordNetLemmatizer
 from empath import Empath
+import json as js
 
+from .db import db_connect, init_db
+from .random_code import get_random_code
+
+con=db_connect()
+cur=con.cursor()
+
+# init_db(cur)
 
 nlp = stanfordnlp.Pipeline()
 wordtags = nltk.ConditionalFreqDist((w.lower(), t) for w, t in nltk.corpus.brown.tagged_words(tagset="universal"))
@@ -27,6 +35,18 @@ async def index(request):
 async def index2(request, path):
     return await file('dist/index.html')
 
+@app.route('/query_keyphrase', methods=['POST'])
+def query_keyphrase(request):
+  keyphrase_id = request.json['keyphrase_id']
+  keyphrase = con.execute('SELECT * FROM keyphrase WHERE keyphrase_id=?', (keyphrase_id,))
+  keyphrase = keyphrase.fetchall()
+  if len(keyphrase)>0:
+    keyphrase=keyphrase[0]
+    return json({'keyphrase':keyphrase[1]})
+  else:
+    return json({'keyphrase': False})
+
+  
 
 def extract_examples(concept):
     hypo_list = []
@@ -414,6 +434,42 @@ def query_dependencies_from_examples(request):
     dependency = max(query_results, key=query_results.count)
 
     return json({'dependency': dependency})
+
+@app.route("/query_rule_storage", methods=["POST",])
+def query_rule_storage(request):
+  input_condition = request.json['input_condition']
+  output_condition = request.json['output_condition']
+  backend_condition = request.json['backend_condition']
+  user_id = request.json['user_id']
+  keyphrase_id = request.json['keyphrase_id']
+  rule = request.json['rule']
+
+  rule_id = get_random_code(lambda rule_id: len(con.execute(
+            "SELECT * FROM rule where rule_id=?", (rule_id,)
+        ).fetchall()) == 0)
+  con.execute(
+    'INSERT INTO rule (rule_id, user_id, input_condition, output_condition, backend_condition, rule, keyphrase)'\
+    'VALUES (?, ?, ?, ?, ?, json(?), ?)',
+    (rule_id,user_id,input_condition,output_condition,backend_condition, js.dumps(rule), keyphrase_id)
+  )
+  con.commit()
+  return json({'done':'done'})
+
+@app.route("/input_keyphrase", methods=["POST",])
+def input_keyphrase(request):
+  phrase = request.json['phrase']
+
+  keyphrase_id = get_random_code(lambda keyphrase_id: len(con.execute(
+                "SELECT * FROM keyphrase where keyphrase_id=?", (keyphrase_id,)
+              ).fetchall())==0)
+  con.execute(
+    'INSERT INTO keyphrase (keyphrase_id, keyphrase_text)'\
+    'VALUES (?, ?)',
+    (keyphrase_id, phrase)
+  )
+  con.commit()
+  return json({'keyphrase_id':keyphrase_id})
+  
 
 @app.route("/example_post", methods=["POST",])
 def create_user(request):

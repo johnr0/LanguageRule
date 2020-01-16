@@ -4,6 +4,7 @@ import {Route, BrowserRouter as Router, Switch, } from "react-router-dom";
 
 import '../css/style.css';
 import LanLegis from './lanlegis/lanlegis';
+import KeyphraseInput from './keyphrase_input/keyphrase_input';
 
 // add new condition under Route element
 
@@ -11,7 +12,8 @@ import LanLegis from './lanlegis/lanlegis';
 ReactDOM.render(
   <Router>
     <Switch>
-      <Route path='/lanlegis/:backend/:input/:output' component={LanLegis}/>
+      <Route path='/lanlegis/:backend/:input/:output/:keyphrase_id/:user_id' component={LanLegis}/>
+      <Route path='/keyphrase_input' component={KeyphraseInput}/>
     </Switch>
       
   </Router>,

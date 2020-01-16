@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 import { defaultCipherList } from 'constants'
+import SemanticsPrevBtn from './lanlegis_semantics_prev_btn'
 
 class SemanticsOutput extends Component{
     Done(){
@@ -25,6 +26,8 @@ class SemanticsOutput extends Component{
             example_choosen_word: this.props.mother_state.example_choosen_word,
             candidates_from_examples: this.props.mother_state.candidates_from_examples,
             empath_examples: this.props.mother_state.empath_examples,
+            pos: this.props.mother_state.pos,
+            pos_list: this.props.mother_state.pos_list
 
         }
         var snapshot_list = this.props.mother_state.semantic_snapshots
@@ -63,6 +66,8 @@ class SemanticsOutput extends Component{
             candidates_from_examples: [],
             semantic_snapshots: snapshot_list,
             empath_examples: [],
+            pos: undefined,
+            pos_list: [],
         })
         if(progress=='semantics'){
             this.props.mother_this.initializeSemanticSearch(this.props.mother_state.words[this.props.mother_state.selected_indexes[progress_semantics]])
@@ -402,6 +407,7 @@ class SemanticsOutput extends Component{
             {this.renderEmpathOutput()}
             {this.renderCandidates()}
             {this.renderDoneButton2()}
+            <SemanticsPrevBtn mother_state={this.props.mother_state} mother_this={this.props.mother_this}></SemanticsPrevBtn>
         </div>)
     }
 }

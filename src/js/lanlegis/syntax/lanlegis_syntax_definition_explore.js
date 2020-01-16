@@ -64,18 +64,24 @@ class SyntaxDefinitionExplore extends Component{
             cur_syntax_dict['dependency'] = this.props.mother_state.cur_selected_dep
             if(this.props.mother_state.dependency_head_switch==true){
                 var head = cur_syntax_dict['head']
-                cur_syntax_dict['head'] = cur_syntax_dict['tail']
-                cur_syntax_dict['tail'] = head
+                cur_syntax_dict['head'] = cur_syntax_dict['word']
+                cur_syntax_dict['word'] = head
             }
             var syntax_relations = this.props.mother_state.syntax_relations
-            var new_progress_syntax = this.props.mother_state.progress_syntax+1
             syntax_relations.push(cur_syntax_dict)
-            this.props.mother_this.setState({syntax_relations: syntax_relations, progress_syntax: new_progress_syntax, syntax_subprogress:'verify' })
+            
+
+            if(syntax_relations.length < this.props.mother_state.syntax_candidates.length){
+                var new_progress_syntax = this.props.mother_state.progress_syntax+1
+                this.props.mother_this.setState({syntax_relations: syntax_relations, progress_syntax: new_progress_syntax, syntax_subprogress:'verify', dependency_head_switch: false, cur_selected_dep:''})
+            }else{
+                this.props.mother_this.setState({progress:'done', syntax_relations: syntax_relations, syntax_subprogress:'verify', dependency_head_switch: false, cur_selected_dep:''})
+            }
     }
 
     renderButton(dep){
         var selected = (this.props.mother_state.cur_selected_dep==dep)
-        console.log(this.props.mother_state,this.props.mother_state.cur_selected_dep, dep)
+        // console.log(this.props.mother_state,this.props.mother_state.cur_selected_dep, dep)
         return (<div className={'SyntaxButton '+((selected)?' SyntaxButtonSelected':'')} onMouseOver={this.setModal.bind(this, dep)} onMouseOut={this.resetModal.bind(this, dep)}
         onClick={this.selectDependency.bind(this, dep)}>{dep}</div>)
     }

@@ -5,6 +5,7 @@ import KeywordChoosing from './lanlegis_keywordchoosing'
 import Semantics from './semantics/lenlegis_semantics_wrapper'
 import axios from 'axios'
 import SyntaxWrapper from './syntax/lanlegis_syntax_wrapper';
+import RuleDone from './lanlegis_rule_done';
 
 // this is the mother component for generating the rule
 class LanLegis extends Component{
@@ -30,7 +31,7 @@ class LanLegis extends Component{
         backend_condition: '',
 
         // key phrase from the backend, where the toxic pattern exists. 
-        key_phrase: "Clean my act!? First, you clean mouth of yours.",//'I feel pity that it is the only way to prove your existence',
+        key_phrase: "",//'I feel pity that it is the only way to prove your existence',
         words: [],
         stop_words: [],
 
@@ -140,10 +141,22 @@ class LanLegis extends Component{
         var backend_condition = this.props.match.params.backend
 
         this.setState({input_condition:input_condition, output_condition:output_condition, backend_condition:backend_condition})
+
+        //query and get data
     }
 
     componentDidMount(){
-        this.PhraseToWord()
+        axios.post('query_keyphrase', {keyphrase_id:this.props.match.params.keyphrase_id})
+        .then(res=>{
+            var keyphrase = res.data['keyphrase']
+            if(keyphrase!=false){
+                // console.log('keyphrase is...'+keyphrase )
+                this.setState({key_phrase: keyphrase})
+                this.PhraseToWord()
+            }
+            
+        })
+        
     }
 
     initializeSemanticSearch(word){
@@ -306,6 +319,8 @@ class LanLegis extends Component{
             return (<Semantics mother_state={this.state} mother_this={this}></Semantics>)
         }else if(this.state.progress=='syntax'){
             return (<SyntaxWrapper mother_state={this.state} mother_this={this}></SyntaxWrapper>)
+        }else if(this.state.progress=='done'){
+            return (<RuleDone mother_state={this.state} mother_this={this}></RuleDone>)
         }else{
             return (<Semantics mother_state={this.state} mother_this={this}></Semantics>)
         }
